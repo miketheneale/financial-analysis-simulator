@@ -1,0 +1,108 @@
+import pandas as pd
+
+# Define financial statement data structure
+class FinancialStatements:
+    def __init__(self, revenue, cogs, operating_expenses, net_income, total_assets, total_liabilities, equity, current_assets, current_liabilities):
+        self.revenue = revenue
+        self.cogs = cogs
+        self.operating_expenses = operating_expenses
+        self.net_income = net_income
+        self.total_assets = total_assets
+        self.total_liabilities = total_liabilities
+        self.equity = equity
+        self.current_assets = current_assets
+        self.current_liabilities = current_liabilities
+
+# Financial Ratios Calculation
+class FinancialRatios:
+    @staticmethod
+    def profitability_ratios(statements):
+        gross_margin = (statements.revenue - statements.cogs) / statements.revenue
+        net_margin = statements.net_income / statements.revenue
+        return {
+            "Gross Margin": gross_margin,
+            "Net Margin": net_margin
+        }
+
+    @staticmethod
+    def liquidity_ratios(statements):
+        current_ratio = statements.current_assets / statements.current_liabilities
+        quick_ratio = (statements.current_assets - statements.cogs) / statements.current_liabilities
+        return {
+            "Current Ratio": current_ratio,
+            "Quick Ratio": quick_ratio
+        }
+
+    @staticmethod
+    def solvency_ratios(statements):
+        debt_to_equity = statements.total_liabilities / statements.equity
+        equity_ratio = statements.equity / statements.total_assets
+        return {
+            "Debt to Equity": debt_to_equity,
+            "Equity Ratio": equity_ratio
+        }
+
+# Interpretation of Ratios
+class RatioInterpreter:
+    @staticmethod
+    def interpret_ratios(ratios):
+        interpretation = {}
+
+        for ratio_name, value in ratios.items():
+            if ratio_name == "Current Ratio":
+                interpretation[ratio_name] = "Healthy" if value >= 1 else "Risky"
+            elif ratio_name == "Debt to Equity":
+                interpretation[ratio_name] = "High Risk" if value > 2 else "Moderate Risk" if value > 1 else "Low Risk"
+            else:
+                interpretation[ratio_name] = "Good" if value > 0.2 else "Needs Improvement"
+
+        return interpretation
+
+# Example Usage
+def main():
+    # User input for financial data
+    print("Enter the financial statement data:")
+    revenue = float(input("Revenue: "))
+    cogs = float(input("Cost of Goods Sold (COGS): "))
+    operating_expenses = float(input("Operating Expenses: "))
+    net_income = float(input("Net Income: "))
+    total_assets = float(input("Total Assets: "))
+    total_liabilities = float(input("Total Liabilities: "))
+    equity = float(input("Equity: "))
+    current_assets = float(input("Current Assets: "))
+    current_liabilities = float(input("Current Liabilities: "))
+
+    statements = FinancialStatements(
+        revenue=revenue,
+        cogs=cogs,
+        operating_expenses=operating_expenses,
+        net_income=net_income,
+        total_assets=total_assets,
+        total_liabilities=total_liabilities,
+        equity=equity,
+        current_assets=current_assets,
+        current_liabilities=current_liabilities
+    )
+
+    # Calculate ratios
+    profitability = FinancialRatios.profitability_ratios(statements)
+    liquidity = FinancialRatios.liquidity_ratios(statements)
+    solvency = FinancialRatios.solvency_ratios(statements)
+
+    # Combine all ratios
+    all_ratios = {**profitability, **liquidity, **solvency}
+
+    # Interpret ratios
+    interpretation = RatioInterpreter.interpret_ratios(all_ratios)
+
+    # Display results
+    print("\nFinancial Ratios:")
+    for ratio_name, value in all_ratios.items():
+        print(f"{ratio_name}: {value:.2f}")
+
+    print("\nInterpretation:")
+    for ratio_name, meaning in interpretation.items():
+        print(f"{ratio_name}: {meaning}")
+
+if __name__ == "__main__":
+    main()
